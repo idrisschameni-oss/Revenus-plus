@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Revenus+ — Gestion financière</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <section id="authView" class="auth-shell">
+    <div class="auth-brand">
+      <div class="brand-mark">R+</div>
+      <div><strong>Revenus+</strong><span>Gestion financière simple</span></div>
+    </div>
+    <div class="auth-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">VOTRE ESPACE FINANCIER</span>
+        <h1>Maîtrisez vos revenus, vos dépenses et vos transactions.</h1>
+        <p>Une interface moderne connectée à votre API Revenus+ pour suivre vos données et effectuer vos calculs financiers.</p>
+        <div class="feature-row">
+          <div><b>01</b><span>Suivi des revenus</span></div>
+          <div><b>02</b><span>Budget & dépenses</span></div>
+          <div><b>03</b><span>Simulateurs</span></div>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="tabs">
+          <button class="tab active" data-auth="login">Connexion</button>
+          <button class="tab" data-auth="register">Créer un compte</button>
+        </div>
+
+        <form id="loginForm" class="form auth-form">
+          <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
+          <label>Mot de passe<input id="loginPassword" type="password" required autocomplete="current-password"></label>
+          <button class="primary wide" type="submit">Se connecter</button>
+        </form>
+
+        <form id="registerForm" class="form auth-form hidden">
+          <label>Prénom<input id="registerPrenom" required></label>
+          <label>Email<input id="registerEmail" type="email" required></label>
+          <label>Mot de passe<input id="registerPassword" type="password" minlength="6" required></label>
+          <label>Code de parrainage <small>(facultatif)</small><input id="registerReferral"></label>
+          <button class="primary wide" type="submit">Créer mon compte</button>
+        </form>
+        <p class="api-note">API : <span id="apiLabel"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="appView" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="side-brand"><div class="brand-mark">R+</div><div><strong>Revenus+</strong><span>Finance</span></div></div>
+      <nav>
+        <button class="nav-item active" data-page="dashboard">◈ <span>Tableau de bord</span></button>
+        <button class="nav-item" data-page="salary">▣ <span>Revenus / salaire</span></button>
+        <button class="nav-item" data-page="expenses">◫ <span>Dépenses & budget</span></button>
+        <button class="nav-item" data-page="simulators">◎ <span>Simulateurs</span></button>
+        <button class="nav-item" data-page="referral">↗ <span>Parrainage</span></button>
+        <button class="nav-item hidden" id="adminNav" data-page="admin">⚙ <span>Administration</span></button>
+      </nav>
+      <div class="side-bottom">
+        <div class="user-mini"><div id="avatar" class="avatar">U</div><div><strong id="sideName">Utilisateur</strong><span id="sideEmail"></span></div></div>
+        <button id="logoutBtn" class="logout">↪ Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menuBtn" class="icon-btn mobile-only">☰</button>
+        <div><span class="muted">Espace personnel</span><h2 id="pageTitle">Tableau de bord</h2></div>
+        <div class="top-user"><div id="topAvatar" class="avatar">U</div><span id="topName">Utilisateur</span></div>
+      </header>
+
+      <div class="content">
+        <section id="page-dashboard" class="page">
+          <div class="welcome"><div><span class="eyebrow">VUE D’ENSEMBLE</span><h1>Bonjour, <span id="welcomeName">Utilisateur</span> 👋</h1><p>Voici l’état actuel de votre espace financier.</p></div><button class="primary" data-page-go="salary">+ Ajouter un revenu</button></div>
+          <div class="stats">
+            <article class="stat-card"><span>Revenu net cumulé</span><strong id="dashNet">0,00</strong><small id="dashCurrency">EUR</small></article>
+            <article class="stat-card"><span>Revenus bruts</span><strong id="dashGross">0,00</strong><small>cumul</small></article>
+            <article class="stat-card"><span>Dépenses</span><strong id="dashExpenses">0,00</strong><small>toutes catégories</small></article>
+            <article class="stat-card"><span>Solde estimé</span><strong id="dashBalance">0,00</strong><small>net − dépenses</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel"><div class="panel-head"><div><span class="eyebrow">REVENUS</span><h3>Dernières semaines</h3></div><button class="text-btn" data-page-go="salary">Voir tout</button></div><div id="recentSalary" class="list"></div></article>
+            <article class="panel"><div class="panel-head"><div><span class="eyebrow">DÉPENSES</span><h3>Dernières dépenses</h3></div><button class="text-btn" data-page-go="expenses">Gérer</button></div><div id="recentExpenses" class="list"></div></article>
+          </div>
+        </section>
+
+        <section id="page-salary" class="page hidden">
+          <div class="section-head"><div><span class="eyebrow">REVENUS</span><h1>Suivi du salaire</h1><p>Enregistrez vos semaines et consultez votre net.</p></div></div>
+          <div class="stats compact">
+            <article class="stat-card"><span>Semaines</span><strong id="salaryWeeks">0</strong></article>
+            <article class="stat-card"><span>Total brut</span><strong id="salaryGross">0,00</strong></article>
+            <article class="stat-card"><span>Total charges</span><strong id="salaryCharges">0,00</strong></article>
+            <article class="stat-card"><span>Total net</span><strong id="salaryNet">0,00</strong></article>
+          </div>
+          <div class="two-col">
+            <article class="panel"><div class="panel-head"><h3>Ajouter une semaine</h3></div>
+              <form id="salaryForm" class="form">
+                <label>Date<input id="salaryDate" type="date" required></label>
+                <div class="inline"><label>Salaire brut<input id="salaryGrossInput" type="number" step="0.01" min="0" placeholder="Ex. 500"></label><label>Devise<select id="salaryCurrency"><option>EUR</option><option>USD</option><option>XAF</option><option>NGN</option><option>GBP</option></select></label></div>
+                <div class="or"><span>ou calculer avec</span></div>
+                <div class="inline"><label>Heures<input id="salaryHours" type="number" step="0.01" min="0"></label><label>Taux horaire<input id="hourRate" type="number" step="0.01" min="0"></label></div>
+                <div class="inline"><label>Cotisations (%)<input id="contrib" type="number" step="0.01" min="0" value="0"></label><label>Impôt (%)<input id="tax" type="number" step="0.01" min="0" value="0"></label></div>
+                <label>Autres retenues<input id="otherDeduct" type="number" step="0.01" min="0" value="0"></label>
+                <button class="primary wide">Enregistrer</button>
+              </form>
+            </article>
+            <article class="panel"><div class="panel-head"><h3>Historique</h3></div><div id="salaryTable" class="table-wrap"></div></article>
+          </div>
+        </section>
+
+        <section id="page-expenses" class="page hidden">
+          <div class="section-head"><div><span class="eyebrow">BUDGET</span><h1>Dépenses</h1><p>Organisez vos dépenses par catégorie et suivez vos plafonds.</p></div></div>
+          <div class="two-col">
+            <article class="panel"><div class="panel-head"><h3>Nouvelle dépense</h3></div>
+              <form id="expenseForm" class="form">
+                <label>Catégorie<select id="expenseCategory" required></select></label>
+                <label>Montant<input id="expenseAmount" type="number" step="0.01" min="0" required></label>
+                <label>Date<input id="expenseDate" type="date" required></label>
+                <label>Description<textarea id="expenseDescription" rows="3" placeholder="Facultatif"></textarea></label>
+                <button class="primary wide">Ajouter la dépense</button>
+              </form>
+              <hr>
+              <h3>Créer une catégorie</h3>
+              <form id="categoryForm" class="form">
+                <label>Nom<input id="categoryName" required placeholder="Transport"></label>
+                <label>Plafond <small>(facultatif)</small><input id="categoryLimit" type="number" step="0.01" min="0"></label>
+                <button class="secondary wide">Créer la catégorie</button>
+              </form>
+            </article>
+            <article class="panel"><div class="panel-head"><div><span class="eyebrow">RÉSUMÉ</span><h3>Budget actuel</h3></div><strong id="expenseTotal">0,00</strong></div><div id="budgetSummary"></div><div class="panel-head margin-top"><h3>Historique</h3></div><div id="expenseTable" class="table-wrap"></div></article>
+          </div>
+        </section>
+
+        <section id="page-simulators" class="page hidden">
+          <div class="section-head"><div><span class="eyebrow">OUTILS</span><h1>Simulateurs</h1><p>Les calculs sont effectués par le backend Revenus+.</p></div></div>
+          <div class="sim-grid">
+            <article class="panel sim-card"><div class="sim-icon">%</div><h3>Frais de transaction</h3><p>Calculez le coût total et le montant final d’une transaction.</p>
+              <form id="feeForm" class="form"><label>Montant<input id="feeAmount" type="number" step="0.01" min="0" required></label><div class="inline"><label>Frais fixe<input id="feeFixed" type="number" step="0.01" value="0"></label><label>Taux (%)<input id="feePct" type="number" step="0.01" value="0"></label></div><div class="inline"><label>Minimum<input id="feeMin" type="number" step="0.01" placeholder="—"></label><label>Maximum<input id="feeMax" type="number" step="0.01" placeholder="—"></label></div><button class="primary wide">Calculer</button></form><div id="feeResult" class="result-box hidden"></div>
+            </article>
+            <article class="panel sim-card"><div class="sim-icon">↔</div><h3>Conversion de devise</h3><p>Convertissez un montant avec un taux et des frais éventuels.</p>
+              <form id="convertForm" class="form"><label>Montant<input id="convertAmount" type="number" step="0.01" min="0" required></label><label>Taux de change<input id="exchangeRate" type="number" step="0.000001" min="0" required placeholder="Ex. 1.08"></label><label>Frais de conversion (%)<input id="convertFee" type="number" step="0.01" min="0" value="0"></label><button class="primary wide">Convertir</button></form><div id="convertResult" class="result-box hidden"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="page-admin" class="page hidden">
+          <div class="section-head"><div><span class="eyebrow">ADMINISTRATION</span><h1>Contrôle de Revenus+</h1><p>Supervisez les utilisateurs, les données financières et l’activité technique du site.</p></div><button class="secondary" id="refreshAdmin">Actualiser</button></div>
+          <div class="stats">
+            <article class="stat-card"><span>Utilisateurs</span><strong id="adminUsers">0</strong><small>comptes inscrits</small></article>
+            <article class="stat-card"><span>Revenus enregistrés</span><strong id="adminSalaryCount">0</strong><small>entrées</small></article>
+            <article class="stat-card"><span>Dépenses enregistrées</span><strong id="adminExpenseCount">0</strong><small>entrées</small></article>
+            <article class="stat-card"><span>Activités API</span><strong id="adminActivityCount">0</strong><small>journalisées</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel"><div class="panel-head"><div><span class="eyebrow">UTILISATEURS</span><h3>Comptes récents</h3></div></div><div id="adminUserTable" class="table-wrap"></div></article>
+            <article class="panel"><div class="panel-head"><div><span class="eyebrow">ACTIVITÉ</span><h3>Journal des activités</h3></div></div><div id="adminActivityTable" class="table-wrap"></div></article>
+          </div>
+          <article class="panel margin-top"><div class="panel-head"><div><span class="eyebrow">VUE GLOBALE</span><h3>Volumes financiers</h3></div></div><div class="stats compact"><article class="stat-card"><span>Total brut enregistré</span><strong id="adminSalaryTotal">0,00</strong></article><article class="stat-card"><span>Total dépenses</span><strong id="adminExpenseTotal">0,00</strong></article></div></article>
+        </section>
+
+        <section id="page-referral" class="page hidden">
+          <div class="section-head"><div><span class="eyebrow">PARRAINAGE</span><h1>Invitez vos proches</h1><p>Votre code et votre lien de parrainage sont gérés par l’API.</p></div></div>
+          <div class="ref-card"><div class="ref-code"><span>VOTRE CODE</span><strong id="refCode">—</strong><small id="refCount">0 filleul</small></div><div class="ref-link"><span>LIEN DE PARRAINAGE</span><div><input id="refLink" readonly><button id="copyRef" class="primary">Copier</button></div></div></div>
+        </section>
+      </div>
+    </main>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
