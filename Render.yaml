@@ -48,8 +48,3 @@ services:
       cp -R "$FRONT"/. site/
 
     staticPublishPath: site
-
-databases:
-  - name: revenus-plus-db
-    plan: free
-    region: frankfurt
